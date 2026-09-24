@@ -1,0 +1,23 @@
+Terminal: mininet (h2)
+
+sudo mn --link tc,bw=10
+
+h2 iperf3 -s &
+
+
+
+Terminal: prediction (h1)
+sudo mnexec -a $(pgrep -f "mininet:h1") bash
+
+source /home/adarsh/cnproject/bin/activate
+
+python /home/adarsh/cnproject/scripts/realtime_predict.py	(continuously measures RTT and packet loss using ping)
+								(use trained Random Forest Model)
+
+
+Terminal: mininet 
+h1 tc qdisc add dev h1-eth0 root netem delay 120ms loss 15%	(120 milliseconds delay and 15% packet loss)
+h1 tc qdisc change dev h1-eth0 root netem delay 250ms loss 30%
+
+h1 tc qdisc del dev h1-eth0 root				(removing artificial congestion)
+
